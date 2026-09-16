@@ -254,6 +254,8 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(d
 <script>
   const $ = (selector: string) => document.querySelector(selector);
 
+  const CARTO_API_KEY = import.meta.env.PUBLIC_CARTO_API_KEY;
+
   let mapInstance: any = null;
 
   function isAndroid() {
@@ -311,7 +313,9 @@ const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(d
       });
 
       L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png${
+          CARTO_API_KEY ? `?key=${CARTO_API_KEY}` : ""
+        }`,
         {
           attribution:
             '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>',

@@ -37,6 +37,22 @@ const { title, description } = Astro.props;
       fetchpriority="high"
     />
     <ClientRouter />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JBKZ4FMBBB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-JBKZ4FMBBB");
+      document.addEventListener("astro:page-load", () =>
+        gtag("event", "page_view", { page_path: location.pathname }),
+      );
+    </script>
+    <script>
+      import Clarity from "@microsoft/clarity";
+      Clarity.init("yj12trfwxr");
+    </script>
   </head>
   <body>
     <main>

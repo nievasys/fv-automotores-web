@@ -1,4 +1,7 @@
 ---
+import Button from "@/components/Button.astro";
+import MercadoLibreIcon from "@/assets/svg/mercadolibre.svg";
+
 const NAV_ITEMS = [
   {
     label: "Showroom",
@@ -100,7 +103,18 @@ const NAV_ITEMS = [
       </ul>
     </nav>
 
-    <button
+    <div class="col-start-3 flex items-center justify-end gap-3">
+      <div class="hidden md:block">
+        <Button
+          href="https://vehiculos.mercadolibre.com.ar/_CustId_129556687"
+          target="_blank"
+          rel="noopener noreferrer"
+          text="STOCK ACTIVO"
+          icon={MercadoLibreIcon}
+          size="sm"
+        />
+      </div>
+      <button
       type="button"
       data-mobile-menu-button
       class="group relative col-start-3 inline-flex h-11 w-11 items-center justify-center justify-self-end text-fvplata-50 outline-none transition duration-300 focus-visible:ring-2 focus-visible:ring-fvazul-300 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent md:hidden"
@@ -187,6 +201,7 @@ const NAV_ITEMS = [
   import { gsap } from "gsap";
 
   const SCROLL_THRESHOLD = 24;
+  const DIRECTION_DEAD_ZONE = 8;
   const LOGO_REVEAL_DURATION = 1.05;
 
   let scrollAbortController: AbortController | null = null;
@@ -194,7 +209,16 @@ const NAV_ITEMS = [
   let navUnderlineAbortController: AbortController | null = null;
   let logoHoverAbortController: AbortController | null = null;
   let internalNavigationAbortController: AbortController | null = null;
+  let headerAutoHideAbortController: AbortController | null = null;
+  let headerHidden = false;
+  let headerLastY = 0;
   let logoRevealTimeline: gsap.core.Timeline | null = null;
+
+  function resetHeaderPosition(header: HTMLElement) {
+    gsap.set(header, { y: 0, clearProps: "transform" });
+    headerHidden = false;
+    headerLastY = window.scrollY;
+  }
 
   function setupHeaderScroll() {
     const header = document.querySelector("[data-header]");
@@ -217,6 +241,71 @@ const NAV_ITEMS = [
       passive: true,
       signal: scrollAbortController.signal,
     });
+  }
+
+  function setupHeaderAutoHide() {
+    const header = document.querySelector("[data-header]") as HTMLElement | null;
+    if (!header) return;
+
+    resetHeaderPosition(header);
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const desktop = window.matchMedia("(min-width: 48rem)");
+
+    if (prefersReducedMotion || !desktop.matches) return;
+
+    headerAutoHideAbortController?.abort();
+    headerAutoHideAbortController = new AbortController();
+    const { signal } = headerAutoHideAbortController;
+
+    const show = () => {
+      if (!headerHidden) return;
+      headerHidden = false;
+      gsap.to(header, {
+        y: 0,
+        duration: 0.4,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    };
+
+    const hide = () => {
+      if (headerHidden) return;
+      headerHidden = true;
+      gsap.to(header, {
+        y: -header.offsetHeight,
+        duration: 0.45,
+        ease: "power2.inOut",
+        overwrite: "auto",
+      });
+    };
+
+    const update = () => {
+      const y = window.scrollY;
+      const menuOpen = header.getAttribute("data-menu-open") === "true";
+
+      if (menuOpen || y <= SCROLL_THRESHOLD) {
+        show();
+      } else {
+        const delta = y - headerLastY;
+        if (delta >= DIRECTION_DEAD_ZONE) {
+          hide();
+        } else if (delta <= -DIRECTION_DEAD_ZONE) {
+          show();
+        }
+      }
+
+      headerLastY = y;
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true, signal });
+
+    desktop.addEventListener("change", (event) => {
+      if (!event.matches) resetHeaderPosition(header);
+    }, { signal });
   }
 
   function setupInternalNavigation() {
@@ -345,6 +434,8 @@ const NAV_ITEMS = [
       if (label) label.textContent = isOpen ? "Cerrar menú" : "Abrir menú";
 
       document.documentElement.classList.toggle("overflow-hidden", isOpen);
+
+      if (isOpen) resetHeaderPosition(header);
     };
 
     setMenuOpen(false);
@@ -402,6 +493,7 @@ const NAV_ITEMS = [
     setupLogoHover();
     setupMobileMenu();
     setupNavUnderline();
+    setupHeaderAutoHide();
     setupInternalNavigation(); 
   });
 </script>

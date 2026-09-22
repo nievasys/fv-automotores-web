@@ -1,0 +1,33 @@
+---
+interface Props {
+  name: string;
+  photo: string;
+  role: string;
+  dateLabel: string;
+}
+
+const { name, photo, role, dateLabel } = Astro.props;
+---
+
+<div class="flex items-center gap-3.5">
+  <img
+    src={photo}
+    alt={`Foto de ${name}`}
+    width="96"
+    height="96"
+    loading="lazy"
+    decoding="async"
+    class="size-12 rounded-full object-cover ring-2 ring-fvplata-300/25 ring-offset-2 ring-offset-fvantracita-950 sm:size-14"
+  />
+  <div class="flex flex-col">
+    <span class="font-primary text-xs font-bold uppercase tracking-[0.22em] text-white">
+      {name}
+    </span>
+    <span class="font-overpass text-[0.7rem] font-light text-fvantracita-400">
+      {role}
+    </span>
+    <span class="font-overpass text-[0.65rem] uppercase tracking-widest text-fvazul-300">
+      {dateLabel}
+    </span>
+  </div>
+</div>

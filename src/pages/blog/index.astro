@@ -1,0 +1,52 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/sections/Header.astro";
+import Footer from "@/sections/Footer.astro";
+import BlogCard from "@/components/BlogCard.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { BLOG_ARTICLES } from "@/consts/guides";
+
+const seoTitle = "Blog sobre cómo comprar tu auto usado - FV Automotores";
+const seoDescription =
+  "Trámites, informes de dominio, permutas, consignaciones y más: respondemos las preguntas más frecuentes de nuestros clientes para que compres tu usado con confianza.";
+---
+
+<Layout title={seoTitle} description={seoDescription}>
+  <Header />
+
+  <section
+    class="relative w-full overflow-hidden bg-primary"
+    aria-labelledby="blog-title"
+  >
+    <div class="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 pb-16 pt-32 sm:px-6 sm:pt-40">
+      <SectionHeader
+        titleId="blog-title"
+        eyebrow="BLOG · RESPUESTAS CLARAS"
+        title="Guías para comprar tu auto usado"
+        subtitle="Trámites, informes y consejos de nuestro día a día: las preguntas que más nos hacen nuestros clientes, respondidas sin vueltas."
+      />
+    </div>
+  </section>
+
+  <section
+    class="relative w-full bg-primary px-4 pb-24 sm:px-6"
+    aria-label="Artículos del blog"
+  >
+    <div
+      class:list={[
+        "mx-auto grid w-full max-w-7xl gap-6",
+        BLOG_ARTICLES.length === 1
+          ? "grid-cols-1 max-w-4xl"
+          : "sm:grid-cols-2 lg:grid-cols-3",
+      ]}
+    >
+      {
+        BLOG_ARTICLES.map((article) => (
+          <BlogCard article={article} featured={BLOG_ARTICLES.length === 1} />
+        ))
+      }
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,100 @@
+---
+import type { Article } from "@/consts/guides";
+import { formatFechaLarga } from "@/consts/guides";
+import ClockIcon from "@/assets/svg/clock-icon.svg";
+import ArrowRightIcon from "@/assets/svg/arrow-right.svg";
+
+interface Props {
+  article: Article;
+  featured?: boolean;
+}
+
+const { article, featured = false } = Astro.props;
+const href = `/blog/${article.slug}`;
+---
+
+<a
+  href={href}
+  class:list={[
+    "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-fvantracita-800/60 bg-fvantracita-950/40 transition duration-300 outline-none hover:border-fvazul-400/50 hover:bg-fvantracita-900/40 focus-visible:ring-2 focus-visible:ring-fvazul-300 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent",
+    featured && "lg:grid lg:grid-cols-2",
+  ]}
+>
+  <div
+    class:list={[
+      "relative w-full overflow-hidden",
+      featured ? "aspect-[16/10] lg:aspect-auto lg:h-full" : "aspect-[16/10]",
+    ]}
+  >
+    <img
+      src={article.cover}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+    />
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 bg-linear-to-t from-fvantracita-950/80 to-transparent"
+    />
+    <span
+      class="absolute left-4 top-4 rounded-full border border-fvplata-300/25 bg-black/70 px-3 py-1 font-overpass text-[0.6rem] font-semibold uppercase tracking-widest text-fvplata-300"
+    >
+      {article.categoria}
+    </span>
+  </div>
+
+  <div
+    class:list={[
+      "flex flex-1 flex-col gap-3",
+      featured ? "p-6 sm:p-10" : "p-5 sm:p-6",
+    ]}
+  >
+    <h2
+      class:list={[
+        "text-balance font-primary font-bold tracking-[0.14em] text-white transition duration-300 group-hover:text-fvplata-50",
+        featured
+          ? "text-xl sm:text-2xl lg:text-3xl"
+          : "text-base sm:text-lg",
+      ]}
+    >
+      {article.pregunta}
+    </h2>
+
+    <p
+      class:list={[
+        "font-overpass font-light leading-relaxed text-fvantracita-400",
+        featured
+          ? "line-clamp-4 text-sm sm:text-base"
+          : "line-clamp-3 text-xs",
+      ]}
+    >
+      {article.intro}
+    </p>
+
+    <div class="mt-auto flex items-center justify-between gap-3 pt-4">
+      <div class="flex items-center gap-4 font-overpass text-[0.65rem] uppercase tracking-widest text-fvplata-500">
+        <span class="inline-flex items-center gap-1.5">
+          <ClockIcon class="size-3.5" aria-hidden="true" />
+          {article.readMinutes} min
+        </span>
+        <span>{formatFechaLarga(article.updatedAt)}</span>
+      </div>
+
+      <span
+        class:list={[
+          "inline-flex items-center gap-1.5 font-bold uppercase text-fvazul-400 transition duration-300 group-hover:text-fvazul-300",
+          featured
+            ? "font-primary text-[0.65rem] tracking-[0.22em]"
+            : "font-primary text-[0.6rem] tracking-[0.22em]",
+        ]}
+      >
+        Leer guía
+        <ArrowRightIcon
+          class="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+          aria-hidden="true"
+        />
+      </span>
+    </div>
+  </div>
+</a>

@@ -1,0 +1,61 @@
+---
+import Button from "@/components/Button.astro";
+import WhatsAppIcon from "@/assets/svg/whatsapp.svg";
+import ArrowRightIcon from "@/assets/svg/arrow-right.svg";
+
+const whatsappNumber = "5491144441290";
+const whatsappMessage =
+  "Hola! Vi una guía del blog de FV Automotores y quería ver el stock disponible.";
+const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+---
+
+<section
+  aria-labelledby="bridge-inventory-title"
+  class="relative overflow-hidden rounded-3xl border border-fvplata-300/15 bg-fvantracita-900/30"
+>
+  <picture class="absolute inset-0" aria-hidden="true">
+    <img
+      src="/hero_background.webp"
+      alt=""
+      role="presentation"
+      loading="lazy"
+      decoding="async"
+      class="h-full w-full object-cover"
+    />
+  </picture>
+  <div
+    aria-hidden="true"
+    class="absolute inset-0 bg-linear-to-r from-fvantracita-950/95 via-fvantracita-950/85 to-fvantracita-950/55"
+  />
+
+  <div class="relative z-10 flex flex-col items-start gap-6 p-6 sm:p-10 lg:p-12">
+    <span class="font-overpass text-[0.65rem] font-semibold uppercase tracking-widest text-fvazul-300">
+      Stock seleccionado
+    </span>
+    <h2
+      id="bridge-inventory-title"
+      class="max-w-xl text-balance font-primary text-2xl font-bold uppercase tracking-[0.15em] text-white sm:text-3xl"
+    >
+      ¿Ya viste nuestro stock seleccionado?
+    </h2>
+    <p class="max-w-lg text-balance font-overpass text-sm font-light leading-relaxed text-fvplata-300">
+      Cada unidad pasa nuestra revisión técnica y está lista para transferir. Mirá
+      los seleccionados del día y coordiná la visita a nuestro showroom en Adrogué.
+    </p>
+    <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+      <Button
+        href="/#showroom"
+        text="Ver nuestro stock"
+        variant="plata"
+        icon={ArrowRightIcon}
+      />
+      <Button
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        text="Consultar"
+        icon={WhatsAppIcon}
+      />
+    </div>
+  </div>
+</section>

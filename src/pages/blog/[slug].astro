@@ -1,0 +1,176 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/sections/Header.astro";
+import Footer from "@/sections/Footer.astro";
+import BlogMeta from "@/components/BlogMeta.astro";
+import BlogInventoryBridge from "@/components/BlogInventoryBridge.astro";
+import TiktokIcon from "@/assets/svg/tiktok.svg";
+import ArrowLeftIcon from "@/assets/svg/arrow-left.svg";
+import {
+  BLOG_ARTICLES,
+  AUTHOR,
+  formatFechaLarga,
+  type Article,
+} from "@/consts/guides";
+
+export function getStaticPaths() {
+  return BLOG_ARTICLES.map((article) => ({
+    params: { slug: article.slug },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props;
+
+const site = import.meta.env.SITE;
+const metaDescription =
+  article.intro.length > 155
+    ? `${article.intro.slice(0, 152).trimEnd()}...`
+    : article.intro;
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: article.pregunta,
+  description: metaDescription,
+  image: `${site}${article.cover}`,
+  author: {
+    "@type": "Person",
+    name: AUTHOR.name,
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "FV Automotores",
+  },
+  datePublished: article.publishedAt,
+  dateModified: article.updatedAt,
+  mainEntityOfPage: `${site}/blog/${article.slug}`,
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: article.pregunta,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: article.intro,
+      },
+    },
+  ],
+};
+---
+
+<Layout title={article.pregunta} description={metaDescription}>
+  <Header />
+
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+  <main
+    class="relative w-full bg-primary"
+    aria-labelledby="article-title"
+  >
+    <div class="mx-auto w-full max-w-3xl px-4 pb-16 pt-32 sm:px-6 sm:pt-36">
+      <a
+        href="/blog"
+        class="group mb-8 inline-flex items-center gap-2 font-overpass text-[0.7rem] uppercase tracking-widest text-fvplata-400 outline-none transition duration-300 hover:text-white focus-visible:ring-2 focus-visible:ring-fvazul-300 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+      >
+        <ArrowLeftIcon
+          class="size-3.5 transition-transform duration-300 group-hover:-translate-x-0.5"
+          aria-hidden="true"
+        />
+        Volver al blog
+      </a>
+
+      <article>
+        <header class="mb-10 flex flex-col gap-5">
+          <span class="font-overpass text-[0.65rem] font-semibold uppercase tracking-widest text-fvazul-300">
+            Guía · {article.categoria}
+          </span>
+
+          <h1
+            id="article-title"
+            class="text-balance font-primary text-2xl font-bold uppercase leading-snug tracking-[0.14em] text-white sm:text-3xl md:text-4xl"
+          >
+            {article.pregunta}
+          </h1>
+
+          <BlogMeta
+            name={AUTHOR.name}
+            photo={AUTHOR.photo}
+            role={AUTHOR.role}
+            dateLabel={`Actualizado: ${formatFechaLarga(article.updatedAt)}`}
+          />
+        </header>
+
+        <p
+          class="border-l-2 border-fvazul-500 pl-4 font-overpass text-sm font-light leading-relaxed text-fvplata-300 sm:text-base"
+        >
+          {article.intro}
+        </p>
+
+        {
+          article.videoUrl && (
+            <a
+              href={article.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group/video mt-8 flex flex-col overflow-hidden rounded-xl border border-fvantracita-800 bg-fvantracita-950/50 transition-all hover:border-fvplata-300/50 hover:bg-fvantracita-900/50"
+            >
+              <div class="flex items-center justify-center py-8">
+                <TiktokIcon class="size-16 text-fvplata-300/50 transition-colors duration-300 group-hover/video:text-white" />
+              </div>
+              <div class="bg-fvantracita-950 px-4 py-3 text-center font-overpass text-[10px] uppercase tracking-widest text-fvantracita-400 transition-colors group-hover/video:bg-fvantracita-800 group-hover/video:text-white">
+                Ver guía visual en nuestro TikTok
+              </div>
+            </a>
+          )
+        }
+
+        <div class="mt-10 flex flex-col gap-10">
+          {
+            article.secciones.map((seccion) => (
+              <section>
+                <h2 class="text-balance font-primary text-lg font-bold uppercase tracking-[0.16em] text-white sm:text-xl">
+                  {seccion.h2}
+                </h2>
+                <div class="mt-4 flex flex-col gap-4">
+                  {
+                    seccion.parrafos.map((parrafo) => (
+                      <p class="font-overpass text-sm font-light leading-relaxed text-fvantracita-300">
+                        {parrafo}
+                      </p>
+                    ))
+                  }
+                  {
+                    seccion.lista && (
+                      <ul class="space-y-2">
+                        {
+                          seccion.lista.map((item) => (
+                            <li class="flex gap-3 font-overpass text-sm font-light leading-relaxed text-fvantracita-300">
+                              <span class="mt-1.5 size-1.5 shrink-0 rounded-full bg-fvazul-400" aria-hidden="true" />
+                              {item}
+                            </li>
+                          ))
+                        }
+                      </ul>
+                    )
+                  }
+                </div>
+              </section>
+            ))
+          }
+        </div>
+      </article>
+    </div>
+
+    <div class="mx-auto w-full max-w-3xl px-4 pb-24 sm:px-6">
+      <BlogInventoryBridge />
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

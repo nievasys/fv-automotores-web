@@ -23,6 +23,10 @@ const NAV_ITEMS = [
     label: "Ubicación",
     href: "#ubicacion", 
   },
+  {
+    label: "Blog",
+    href: "/blog",
+  },
 ] as const;
 ---
 
@@ -137,44 +141,44 @@ const NAV_ITEMS = [
       ></span>
     </button>
   </div>
-
-  <div
-    id="mobile-menu"
-    data-mobile-menu
-    aria-hidden="true"
-    inert
-    class="fixed inset-0 z-40 flex min-h-dvh -translate-y-2 items-center justify-center overflow-y-auto bg-black/95 px-6 py-28 opacity-0 backdrop-blur-2xl transition duration-300 ease-out pointer-events-none data-[open=true]:translate-y-0 data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto md:hidden"
-  >
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_50%_0%,rgba(30,139,255,0.18),transparent_62%)]"
-    >
-    </div>
-    <nav aria-label="Menú principal mobile" class="relative w-full max-w-sm">
-      <ul class="flex flex-col items-center gap-6">
-        {
-          NAV_ITEMS.map((item) => (
-            <li class="w-full">
-              <a
-                href={item.href}
-                data-mobile-menu-link
-                data-nav-link
-                class="group relative flex items-center justify-center rounded-2xl border border-fvazul-200/35 bg-fvazul-200/10 px-5 py-5 text-center font-display text-lg font-bold tracking-[0.28em] text-fvplata-50 outline-none transition duration-300 hover:border-fvazul-300 hover:bg-fvazul-400/20 focus-visible:ring-2 focus-visible:ring-fvazul-300 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
-              >
-                <span
-                  aria-hidden="true"
-                  data-nav-underline
-                  class="pointer-events-none absolute inset-x-6 bottom-3 h-px bg-fvplata-300"
-                />
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-  </div>
 </header>
+
+<div
+  id="mobile-menu"
+  data-mobile-menu
+  aria-hidden="true"
+  inert
+  class="fixed inset-0 z-40 flex min-h-dvh -translate-y-2 items-center justify-center overflow-y-auto bg-black/95 px-6 py-28 opacity-0 backdrop-blur-2xl transition duration-300 ease-out pointer-events-none data-[open=true]:translate-y-0 data-[open=true]:opacity-100 data-[open=true]:pointer-events-auto md:hidden"
+>
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_50%_0%,rgba(30,139,255,0.18),transparent_62%)]"
+  >
+  </div>
+  <nav aria-label="Menú principal mobile" class="relative w-full max-w-sm">
+    <ul class="flex flex-col items-center gap-6">
+      {
+        NAV_ITEMS.map((item) => (
+          <li class="w-full">
+            <a
+              href={item.href}
+              data-mobile-menu-link
+              data-nav-link
+              class="group relative flex items-center justify-center rounded-2xl border border-fvazul-200/35 bg-fvazul-200/10 px-5 py-5 text-center font-display text-lg font-bold tracking-[0.28em] text-fvplata-50 outline-none transition duration-300 hover:border-fvazul-300 hover:bg-fvazul-400/20 focus-visible:ring-2 focus-visible:ring-fvazul-300 focus-visible:ring-offset-4 focus-visible:ring-offset-transparent"
+            >
+              <span
+                aria-hidden="true"
+                data-nav-underline
+                class="pointer-events-none absolute inset-x-6 bottom-3 h-px bg-fvplata-300"
+              />
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>
 
 <style>
   [data-logo-reveal] > img {
@@ -320,10 +324,13 @@ const NAV_ITEMS = [
         const href = link.getAttribute("href");
 
         if (href && href.startsWith("#")) {
-          e.preventDefault();
-          
           const targetSection = document.querySelector(href);
-          if (!targetSection) return;
+          if (!targetSection) {
+            window.location.assign("/" + href);
+            return;
+          }
+
+          e.preventDefault();
 
           const headerOffset = 75; 
           const elementPosition = targetSection.getBoundingClientRect().top;
@@ -337,6 +344,8 @@ const NAV_ITEMS = [
             onUpdate: () => window.scrollTo(0, scrollTarget.y)
           });
         } else if (href === "#" || href === "/") {
+          if (location.pathname !== "/") return;
+
           e.preventDefault();
           const scrollTarget = { y: window.scrollY };
           gsap.to(scrollTarget, {
@@ -442,6 +451,10 @@ const NAV_ITEMS = [
 
     button.addEventListener("click", () => {
       setMenuOpen(button.getAttribute("aria-expanded") !== "true");
+    }, { signal });
+
+    menu.addEventListener("click", (e) => {
+      if (e.target === menu) setMenuOpen(false);
     }, { signal });
 
     links.forEach((link) => {

@@ -26,6 +26,10 @@ const NAV_ITEMS = [
     label: "Ubicación",
     href: "#ubicacion",
   },
+  {
+    label: "Blog",
+    href: "/blog",
+  },
 ] as const;
 
 const whatsappNumber = "5491144441290";
@@ -101,7 +105,7 @@ const PLATFORMS = {
 >
   <SectionGlowDivider />
   <div class="mx-auto max-w-7xl">
-    <div class="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
+    <div class="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5 lg:gap-12">
       <div>
         <h4
           class="mb-5 font-primary text-xs font-bold tracking-[0.2em] text-white uppercase opacity-90"
@@ -129,6 +133,64 @@ const PLATFORMS = {
               </li>
             ))
           }
+        </ul>
+      </div>
+
+      <div>
+        <h4
+          class="mb-5 font-primary text-xs font-bold tracking-[0.2em] text-white uppercase opacity-90"
+        >
+          Legales
+        </h4>
+        <ul class="space-y-3.5">
+          <li>
+            <a
+              href="/legal/privacidad"
+              data-nav-link
+              class="group relative inline-flex items-center font-overpass text-sm text-fvantracita-400 transition duration-300 hover:text-white focus-visible:text-white outline-none"
+            >
+              <span class="relative inline-block">
+                <span
+                  aria-hidden="true"
+                  data-nav-underline
+                  class="pointer-events-none absolute inset-x-0 -bottom-1 h-px bg-fvplata-300"
+                />
+                Política de Privacidad
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="/legal/cookies"
+              data-nav-link
+              class="group relative inline-flex items-center font-overpass text-sm text-fvantracita-400 transition duration-300 hover:text-white focus-visible:text-white outline-none"
+            >
+              <span class="relative inline-block">
+                <span
+                  aria-hidden="true"
+                  data-nav-underline
+                  class="pointer-events-none absolute inset-x-0 -bottom-1 h-px bg-fvplata-300"
+                />
+                Política de Cookies
+              </span>
+            </a>
+          </li>
+          <li>
+            <a
+              href="/legal/terminos"
+              data-nav-link
+              class="group relative inline-flex items-center font-overpass text-sm text-fvantracita-400 transition duration-300 hover:text-white focus-visible:text-white outline-none"
+            >
+              <span class="relative inline-block">
+                <span
+                  aria-hidden="true"
+                  data-nav-underline
+                  class="pointer-events-none absolute inset-x-0 -bottom-1 h-px bg-fvplata-300"
+                />
+                Términos y Condiciones
+              </span>
+            </a>
+          </li>
         </ul>
       </div>
 
